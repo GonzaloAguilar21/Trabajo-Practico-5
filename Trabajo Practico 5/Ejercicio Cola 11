@@ -1,0 +1,119 @@
+class Personaje:
+    def __init__(self, nombre, planeta):
+        self.nombre = nombre
+        self.planeta = planeta
+
+    def __str__(self):
+        return f"Personaje: {self.nombre}, Planeta: {self.planeta}"
+
+class Cola:
+    def __init__(self):
+        self.items = []
+
+    def esta_vacia(self):
+        return len(self.items) == 0
+
+    def encolar(self, personaje):
+        self.items.append(personaje)
+
+    def desencolar(self):
+        if not self.esta_vacia():
+            return self.items.pop(0)
+        else:
+            return None
+
+    def tamano(self):
+        return len(self.items)
+
+    def frente(self):
+        if not self.esta_vacia():
+            return self.items[0]
+        else:
+            return None
+
+cola = Cola()
+cola.encolar(Personaje("Luke Skywalker", "Tatooine"))
+cola.encolar(Personaje("Jar Jar Binks", "Naboo"))
+cola.encolar(Personaje("Han Solo", "Corellia"))
+cola.encolar(Personaje("Yoda", "Dagobah"))
+cola.encolar(Personaje("Leia Organa", "Alderaan"))
+cola.encolar(Personaje("Wicket", "Endor"))
+
+#A.
+def mostrar_personajes_planetas(cola):
+    planetas_filtrados = ["Alderaan", "Endor", "Tatooine"]
+    personajes = []
+
+    for i in range(cola.tamano()):
+        personaje = cola.desencolar()
+        if personaje.planeta in planetas_filtrados:
+            personajes.append(personaje)
+        cola.encolar(personaje)
+    return personajes
+
+#B.
+def planeta_natal(cola, nombres_personajes):
+    planetas = {}
+
+    for i in range(cola.tamano()):
+        personaje = cola.desencolar()
+        if personaje.nombre in nombres_personajes:
+            planetas[personaje.nombre] = personaje.planeta
+        cola.encolar(personaje)
+    return planetas
+
+#C.
+def insertar_antes_de(cola, nuevo_personaje, nombre_objetivo):
+    temp = Cola()
+    encontrado = False
+
+    while not cola.esta_vacia():
+        personaje = cola.desencolar()
+        if personaje.nombre == nombre_objetivo and not encontrado:
+            temp.encolar(nuevo_personaje)
+            encontrado = True
+        temp.encolar(personaje)
+
+    while not temp.esta_vacia():
+        cola.encolar(temp.desencolar())
+
+#D.
+def eliminar_despues_de(cola, nombre_objetivo):
+    temp = Cola()
+    eliminar_siguiente = False
+
+    while not cola.esta_vacia():
+        personaje = cola.desencolar()
+        if eliminar_siguiente:
+            eliminar_siguiente = False
+        else:
+            temp.encolar(personaje)
+        if personaje.nombre == nombre_objetivo:
+            eliminar_siguiente = True 
+    while not temp.esta_vacia():
+        cola.encolar(temp.desencolar())
+
+#Prueba
+
+#A
+print("Personajes de Alderaan, Endor y Tatooine:")
+personajes_encontrados = mostrar_personajes_planetas(cola)
+for personaje in personajes_encontrados:
+    print(personaje)
+
+#B
+print("\nPlaneta natal de Luke Skywalker y Han Solo:")
+planetas = planeta_natal(cola, ["Luke Skywalker", "Han Solo"])
+for nombre, planeta in planetas.items():
+    print(f"{nombre} es de {planeta}")
+
+#C
+print("\nInsertando un nuevo personaje antes de Yoda:")
+nuevo_personaje = Personaje("Ahsoka Tano", "Shili")
+insertar_antes_de(cola, nuevo_personaje, "Yoda")
+
+#D
+print("\nEliminando el personaje después de Jar Jar Binks:")
+eliminar_despues_de(cola, "Jar Jar Binks")
+while not cola.esta_vacia():
+    print(cola.desencolar())

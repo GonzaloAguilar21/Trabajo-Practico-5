@@ -1,0 +1,60 @@
+class Cola:
+    def __init__(self):
+        self.items = []
+
+    def esta_vacia(self):
+        return len(self.items) == 0
+
+    def encolar(self, item):
+        self.items.append(item)
+
+    def desencolar(self):
+        if not self.esta_vacia():
+            return self.items.pop(0)
+        else:
+            return None
+
+    def frente(self):
+        if not self.esta_vacia():
+            return self.items[0]
+        else:
+            return None
+
+    def tamano(self):
+        return len(self.items)
+
+def combinar_colas(cola1, cola2):
+    cola_combinada = Cola()
+
+    while not cola1.esta_vacia() or not cola2.esta_vacia():
+        if cola1.esta_vacia():
+            cola_combinada.encolar(cola2.desencolar())
+        elif cola2.esta_vacia():
+            cola_combinada.encolar(cola1.desencolar())
+        else:
+            if cola1.frente() <= cola2.frente():
+                cola_combinada.encolar(cola1.desencolar())
+            else:
+                cola_combinada.encolar(cola2.desencolar())
+
+    return cola_combinada
+
+#Prueba 
+
+cola1 = Cola()
+cola2 = Cola()
+
+cola1.encolar(1)
+cola1.encolar(3)
+cola1.encolar(5)
+cola1.encolar(7)
+
+cola2.encolar(2)
+cola2.encolar(4)
+cola2.encolar(6)
+cola2.encolar(8)
+
+cola_combinada = combinar_colas(cola1, cola2)
+print("Cola combinada:")
+while not cola_combinada.esta_vacia():
+    print(cola_combinada.desencolar())

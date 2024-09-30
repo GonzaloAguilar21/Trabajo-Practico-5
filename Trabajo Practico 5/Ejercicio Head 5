@@ -1,0 +1,63 @@
+import heapq
+class Pedido:
+    def __init__(self, prioridad, general, planeta, descripcion):
+        self.prioridad = prioridad
+        self.general = general
+        self.planeta = planeta
+        self.descripcion = descripcion
+
+    def __lt__(self, other):
+        return self.prioridad < other.prioridad
+
+    def __str__(self):
+        return f"[Prioridad: {self.prioridad}] General: {self.general}, Planeta: {self.planeta}, Descripción: {self.descripcion}"
+
+def calcular_prioridad(general, planeta, descripcion):
+    descripcion = descripcion.lower()
+
+    if general == "Gran Inquisidor" or planeta == "Lothal" or "hera syndulla" in descripcion:
+        return 1
+    elif general == "Agente Kallus" or "destructor estelar" in descripcion or "at-at" in descripcion:
+        return 2
+    else:
+        return 3
+
+def agregar_pedido(cola_prioridad, general, planeta, descripcion):
+    prioridad = calcular_prioridad(general, planeta, descripcion)
+    pedido = Pedido(prioridad, general, planeta, descripcion)
+    heapq.heappush(cola_prioridad, pedido)
+    print(f"Pedido agregado: {pedido}")
+
+def atender_pedido(cola_prioridad, bitacora):
+    if len(cola_prioridad) > 0:
+        pedido_atendido = heapq.heappop(cola_prioridad)
+        bitacora.append(pedido_atendido)
+        print(f"Pedido atendido: {pedido_atendido}")
+    else:
+        print("No hay pedidos en la cola para atender.")
+
+def mostrar_bitacora(bitacora):
+    if len(bitacora) > 0:
+        print("\nBitácora de pedidos atendidos:")
+        while len(bitacora) > 0:
+            print(bitacora.pop())
+    else:
+        print("La bitácora está vacía.")
+
+#Prueba
+cola_prioridad = []
+bitacora = []
+
+agregar_pedido(cola_prioridad, "Gran Inquisidor", "Lothal", "Necesito refuerzos inmediatos")
+agregar_pedido(cola_prioridad, "Agente Kallus", "Endor", "Envía un Destructor Estelar a Endor")
+agregar_pedido(cola_prioridad, "General Veers", "Hoth", "Solicito refuerzos para nuestros AT-AT")
+agregar_pedido(cola_prioridad, "General Tarkin", "Coruscant", "Reunión táctica en Coruscant")
+
+print("\nAtendiendo pedidos:")
+atender_pedido(cola_prioridad, bitacora)
+atender_pedido(cola_prioridad, bitacora)
+agregar_pedido(cola_prioridad, "General Dodonna", "Yavin IV", "Solicito un informe de la situación")
+
+atender_pedido(cola_prioridad, bitacora)
+
+mostrar_bitacora(bitacora)
